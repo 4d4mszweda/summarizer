@@ -1,4 +1,5 @@
-package summary
+// Package summarizer provides communication layer with AI to summarize texts
+package summarizer
 
 import (
 	"context"

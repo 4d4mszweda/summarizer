@@ -1,4 +1,4 @@
-package summary
+package summarizer
 
 type RequestOption func(*Request)
 

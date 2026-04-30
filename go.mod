@@ -1,4 +1,4 @@
-module summary
+module summarizer
 
 go 1.24.2
 
