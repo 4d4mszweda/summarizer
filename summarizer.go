@@ -3,7 +3,6 @@ package summarizer
 
 import (
 	"context"
-	"errors"
 	"strings"
 )
 
@@ -13,16 +12,6 @@ Focus on the most important facts, claims, and outcomes.
 
 Text:
 {{text}}`
-
-var (
-	ErrNoProvider = errors.New("summary: provider is required")
-	ErrEmptyText  = errors.New("summary: text is required")
-)
-
-type Provider interface {
-	Name() string
-	Summarize(context.Context, Request) (Response, error)
-}
 
 type Request struct {
 	Text         string
@@ -42,6 +31,11 @@ type Response struct {
 type Service struct {
 	provider       Provider
 	promptTemplate string
+}
+
+type Provider interface {
+	Name() string
+	Summarize(context.Context, Request) (Response, error)
 }
 
 type Option func(*Service)
