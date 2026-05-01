@@ -51,6 +51,10 @@ func WithDefaultPromptTemplate() Option {
 	}
 }
 
+func (s *Service) ContextSummary(in InputItem) {}
+
+func (s *Service) AddItem(in InputItem) {}
+
 func (s *Service) Summarize(ctx context.Context, text string, opts ...RequestOption) (Response, error) {
 	if s == nil || s.provider == nil {
 		return Response{}, ErrNoProvider
