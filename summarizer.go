@@ -1,17 +1,10 @@
-// Package summarizer provides communication layer with AI to summarize texts
+// Package summarizer provides communication layer with AI models to summarize texts
 package summarizer
 
 import (
 	"context"
 	"strings"
 )
-
-const defaultPromptTemplate = `You are a precise summarization assistant.
-Summarize the following text in a concise, readable way.
-Focus on the most important facts, claims, and outcomes.
-
-Text:
-{{text}}`
 
 type Request struct {
 	Text         string
@@ -29,24 +22,12 @@ type Response struct {
 }
 
 type Service struct {
-	provider       Provider
-	promptTemplate string
-}
-
-type Provider interface {
-	Name() string
-	Summarize(context.Context, Request) (Response, error)
+	provider Provider
+	prompt   Prompt
+	input    Input
 }
 
 type Option func(*Service)
-
-func WithPromptTemplate(prompt string) Option {
-	return func(s *Service) {
-		if strings.TrimSpace(prompt) != "" {
-			s.promptTemplate = prompt
-		}
-	}
-}
 
 func New(provider Provider, opts ...Option) (*Service, error) {
 	if provider == nil {
@@ -54,8 +35,7 @@ func New(provider Provider, opts ...Option) (*Service, error) {
 	}
 
 	svc := &Service{
-		provider:       provider,
-		promptTemplate: defaultPromptTemplate,
+		provider: provider,
 	}
 
 	for _, opt := range opts {
@@ -65,13 +45,10 @@ func New(provider Provider, opts ...Option) (*Service, error) {
 	return svc, nil
 }
 
-func MustNew(provider Provider, opts ...Option) *Service {
-	svc, err := New(provider, opts...)
-	if err != nil {
-		panic(err)
-	}
+func WithDefaultPromptTemplate() Option {
+	return func(s *Service) {
 
-	return svc
+	}
 }
 
 func (s *Service) Summarize(ctx context.Context, text string, opts ...RequestOption) (Response, error) {
@@ -86,7 +63,7 @@ func (s *Service) Summarize(ctx context.Context, text string, opts ...RequestOpt
 
 	req := Request{
 		Text:         text,
-		Instructions: renderPrompt(s.promptTemplate, text),
+		Instructions: renderPrompt(s.prompt, text),
 	}
 
 	for _, opt := range opts {
@@ -94,16 +71,8 @@ func (s *Service) Summarize(ctx context.Context, text string, opts ...RequestOpt
 	}
 
 	if strings.TrimSpace(req.Instructions) == "" {
-		req.Instructions = renderPrompt(s.promptTemplate, text)
+		req.Instructions = renderPrompt(s.prompt, text)
 	}
 
 	return s.provider.Summarize(ctx, req)
-}
-
-func DefaultPromptTemplate() string {
-	return defaultPromptTemplate
-}
-
-func renderPrompt(tpl, text string) string {
-	return strings.ReplaceAll(tpl, "{{text}}", text)
 }
