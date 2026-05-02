@@ -11,12 +11,36 @@ type Provider interface {
 
 // openai
 
-type OpenaiProvider struct{}
+type OpenaiProvider struct {
+	model  string
+	apiKey string
+}
 
-// Cloude
-
-type CloudeProvider struct{}
+func NewOpenaiProvider(model, apiKey string) OpenaiProvider {
+	return OpenaiProvider{
+		model:  model,
+		apiKey: apiKey,
+	}
+}
 
 // llama.cpp
 
-type LlmacppProvider struct{}
+type LlamacppProvider struct{}
+
+func NewLlamacppProvider(model, apiKey string) LlamacppProvider {
+	return LlamacppProvider{}
+}
+
+// Cloude
+
+//type CloudeProvider struct {
+//	model  string
+//	apiKey string
+//}
+//
+//func NewCloudeProvider(model, apiKey string) CloudeProvider {
+//	return CloudeProvider{
+//		model:  model,
+//		apiKey: apiKey,
+//	}
+//}

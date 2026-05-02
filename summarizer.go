@@ -5,29 +5,26 @@ import (
 	"context"
 )
 
+// Request
 type Request struct {
-	Text         string
-	Instructions string
-	Model        string
-	Temperature  float64
-	MaxTokens    int
 }
 
+// Response
 type Response struct {
-	Summary  string
-	Provider string
-	Model    string
-	Raw      string
 }
 
+// Service
 type Service struct {
-	provider Provider
-	prompt   Prompt
-	input    Input
+	provider              Provider
+	prompt                Prompt
+	input                 Input
+	inputProccessingQueue []string // TODO
 }
 
+// Option
 type Option func(*Service)
 
+// New - constructor
 func New(provider Provider, opts ...Option) (*Service, error) {
 	if provider == nil {
 		return nil, ErrNoProvider
@@ -44,15 +41,16 @@ func New(provider Provider, opts ...Option) (*Service, error) {
 	return svc, nil
 }
 
+// WithDefaultPromptTemplate -
 func WithDefaultPromptTemplate() Option {
 	return func(s *Service) {
 	}
 }
 
-func (s *Service) AddContext(in InputItem) {}
-
+// AddItem - add item to be summarized
 func (s *Service) AddItem(in InputItem) {}
 
-func (s *Service) Summarize(ctx context.Context, text string, opts ...RequestOption) (Response, error) {
+// RunSummarize - run summarize proccess
+func (s *Service) RunSummarize(ctx context.Context, text string, opts ...RequestOption) (Response, error) {
 	return Response{}, nil
 }
