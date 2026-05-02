@@ -5,9 +5,18 @@ import "context"
 type Provider interface {
 	Name() string
 	Summarize(context.Context, Request) (Response, error)
+	// TODO tokenize
+	// TODO detokenize
+	// TODO ping
 }
 
-// TODO tutaj trzeba gotowych providerów lub innych construktorów dla danych modeli
+// Request
+type Request struct {
+}
+
+// Response
+type Response struct {
+}
 
 // openai
 
@@ -23,24 +32,28 @@ func NewOpenaiProvider(model, apiKey string) OpenaiProvider {
 	}
 }
 
-// llama.cpp
-
-type LlamacppProvider struct{}
-
-func NewLlamacppProvider(model, apiKey string) LlamacppProvider {
-	return LlamacppProvider{}
+func (p *OpenaiProvider) Name() string {
+	return ""
 }
 
-// Cloude
+func (p *OpenaiProvider) Summarize(ctx context.Context, req Request) (Response, error) {
+	return Response{}, nil
+}
 
-//type CloudeProvider struct {
-//	model  string
-//	apiKey string
-//}
-//
-//func NewCloudeProvider(model, apiKey string) CloudeProvider {
-//	return CloudeProvider{
-//		model:  model,
-//		apiKey: apiKey,
-//	}
-//}
+// llama.cpp
+
+type LlamacppProvider struct {
+	url string
+}
+
+func NewLlamacppProvider(url string) LlamacppProvider {
+	return LlamacppProvider{url: url}
+}
+
+func (p *LlamacppProvider) Name() string {
+	return ""
+}
+
+func (p *LlamacppProvider) Summarize(ctx context.Context, req Request) (Response, error) {
+	return Response{}, nil
+}
