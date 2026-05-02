@@ -3,7 +3,6 @@ package summarizer
 
 import (
 	"context"
-	"strings"
 )
 
 type Request struct {
@@ -47,36 +46,13 @@ func New(provider Provider, opts ...Option) (*Service, error) {
 
 func WithDefaultPromptTemplate() Option {
 	return func(s *Service) {
-
 	}
 }
 
-func (s *Service) ContextSummary(in InputItem) {}
+func (s *Service) AddContext(in InputItem) {}
 
 func (s *Service) AddItem(in InputItem) {}
 
 func (s *Service) Summarize(ctx context.Context, text string, opts ...RequestOption) (Response, error) {
-	if s == nil || s.provider == nil {
-		return Response{}, ErrNoProvider
-	}
-
-	text = strings.TrimSpace(text)
-	if text == "" {
-		return Response{}, ErrEmptyText
-	}
-
-	req := Request{
-		Text:         text,
-		Instructions: renderPrompt(s.prompt, text),
-	}
-
-	for _, opt := range opts {
-		opt(&req)
-	}
-
-	if strings.TrimSpace(req.Instructions) == "" {
-		req.Instructions = renderPrompt(s.prompt, text)
-	}
-
-	return s.provider.Summarize(ctx, req)
+	return Response{}, nil
 }
